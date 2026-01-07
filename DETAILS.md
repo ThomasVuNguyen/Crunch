@@ -21,3 +21,7 @@ Big Sound Sensor (Digital Only):
 G → Pin 14 (Ground)
 D0 → GPIO 27 (Pin 13)
 A0 → Leave unconnected
+
+USB Camera:
+
+Connected via USB port

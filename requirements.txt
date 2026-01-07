@@ -1,3 +1,4 @@
 RPi.GPIO>=0.7.1
 gpiozero>=2.0
 lgpio>=0.2.2
+opencv-python>=4.8.0

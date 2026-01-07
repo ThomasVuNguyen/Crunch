@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 Sensor Test Script for Raspberry Pi 5
-Tests: HC-SR04 Ultrasonic, PIR Motion, Big Sound Sensor
+Tests: HC-SR04 Ultrasonic, PIR Motion, Big Sound Sensor, USB Camera
 Uses gpiozero (compatible with Pi 5)
 """
 
 import time
 import sys
+import subprocess
 
 try:
     from gpiozero import DistanceSensor, MotionSensor, DigitalInputDevice
@@ -14,6 +15,11 @@ try:
 except ImportError:
     print("ERROR: gpiozero not installed. Run: pip install gpiozero lgpio")
     sys.exit(1)
+
+try:
+    import cv2
+except ImportError:
+    cv2 = None
 
 # GPIO Pin Configuration (BCM numbering)
 ULTRASONIC_TRIG = 23
@@ -132,6 +138,45 @@ def test_sound():
         return False
 
 
+def test_camera():
+    """Test USB camera."""
+    print("\n" + "=" * 50)
+    print("TESTING: USB Camera")
+    print("=" * 50)
+
+    if cv2 is None:
+        print("\n[FAIL] opencv-python not installed")
+        return False
+
+    try:
+        cap = cv2.VideoCapture(0)
+        if not cap.isOpened():
+            print("\n[FAIL] Could not open camera")
+            return False
+
+        ret, frame = cap.read()
+        cap.release()
+
+        if ret and frame is not None:
+            h, w = frame.shape[:2]
+            cv2.imwrite("cheese.png", frame)
+            print(f"  Captured frame: {w}x{h}")
+            print("  Saved to: cheese.png")
+            try:
+                subprocess.run(["chafa", "cheese.png"], check=True)
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                pass
+            print("\n[PASS] USB camera is working!")
+            return True
+        else:
+            print("\n[FAIL] Could not capture frame")
+            return False
+
+    except Exception as e:
+        print(f"\n[FAIL] Error: {e}")
+        return False
+
+
 def run_all_tests():
     """Run all sensor tests."""
     print("\n" + "#" * 50)
@@ -142,6 +187,7 @@ def run_all_tests():
         "Ultrasonic (HC-SR04)": test_ultrasonic(),
         "PIR Motion": test_pir(),
         "Sound Sensor": test_sound(),
+        "USB Camera": test_camera(),
     }
 
     # Summary

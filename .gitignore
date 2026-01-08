@@ -2,3 +2,9 @@ venv/
 __pycache__/
 *.pyc
 cheese.png
+
+# ML training artifacts
+see/checkpoints/*.pt
+see/training_curves.png
+see/predictions.png
+inference_*.png

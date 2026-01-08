@@ -5,8 +5,9 @@ Using a robot as a perceptron
 
 ```bash
 python3 -m venv venv
-./venv/bin/pip install -r requirements.txt
-./venv/bin/python test.py
+source venv/bin/activate
+pip install -r requirements.txt
+python test.py
 ```
 
 **Notes:**
